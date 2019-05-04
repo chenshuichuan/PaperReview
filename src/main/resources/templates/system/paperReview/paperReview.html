@@ -1,187 +1,197 @@
 <!DOCTYPE html>
-<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro" lang="zh">
 <head>
-	<th:block th:include="include :: header('论文列表')" />
+    <th:block th:include="include :: header('论文列表')"/>
 </head>
 <body class="gray-bg">
-     <div class="container-div">
-		<div class="row">
-			<div class="col-sm-12 search-collapse">
-				<form id="formId">
-					<div class="select-list">
-						<ul>
-							<li>
-								论文标题：<input type="text" name="title"/>
-							</li>
+<div class="container-div">
+    <div class="row">
+        <div class="col-sm-12 search-collapse">
+            <form id="formId">
+                <div class="select-list">
+                    <ul>
+                        <li>
+                            论文标题：<input type="text" name="title"/>
+                        </li>
 
-							<li>
-								上传者：<input type="text" name="user"/>
-							</li>
+                        <li>
+                            上传者：<input type="text" name="user"/>
+                        </li>
+                        <li>
+                            论文类型：
+                            <select name="paperType">
+                                <option value="">所有</option>
+                                <option th:each="paperType,typeStat:${paperTypeList}"
+                                        th:value="${paperType.typeValue}"
+                                        th:text="${paperType.typeLable}"></option>
+                            </select>
+                        </li>
+                        <li>
+                            作者：<input type="text" name="author"/>
+                        </li>
+                        <li>
+                            是否审核：
+                            <select name="isReview" th:with="type=${@dict.getType('user_yes_no')}">
+                                <option value="">所有</option>
+                                <option th:each="dict : ${type}" th:text="${dict.dictLabel}"
+                                        th:value="${dict.dictValue}"></option>
+                            </select>
+                            <!--<input type="text" name="isReview"/>-->
+                        </li>
+                        <li>
+                            是否通过：
+                            <select name="isPass" th:with="type=${@dict.getType('user_yes_no')}">
+                                <option value="">所有</option>
+                                <option th:each="dict : ${type}" th:text="${dict.dictLabel}"
+                                        th:value="${dict.dictValue}"></option>
+                            </select>
+                            <!--<input type="text" name="isPass"/>-->
+                        </li>
+                        <li>
+                            论文状态：
+                            <select name="status" th:with="type=${@dict.getType('user_paper_status')}">
+                                <option value="">所有</option>
+                                <option th:each="dict : ${type}" th:text="${dict.dictLabel}"
+                                        th:value="${dict.dictValue}"></option>
+                            </select>
+                            <!--<input type="text" name="status"/>-->
+                        </li>
 
-							<li>
-								作者：<input type="text" name="author"/>
-							</li>
+                        <li>
+                            <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i
+                                    class="fa fa-search"></i>&nbsp;搜索</a>
+                            <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i
+                                    class="fa fa-refresh"></i>&nbsp;重置</a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
 
-							<li>
-								是否审核：<input type="text" name="isReview"/>
-							</li>
+        <div class="btn-group-sm" id="toolbar" role="group">
 
-							<li>
-								是否通过：<input type="text" name="isPass"/>
-							</li>
+            <a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()"
+               shiro:hasPermission="system:paperReview:edit">
+                <i class="fa fa-edit"></i> 修改
+            </a>
+            <a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()"
+               shiro:hasPermission="system:paperReview:remove">
+                <i class="fa fa-remove"></i> 删除
+            </a>
+            <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:paperReview:export">
+                <i class="fa fa-download"></i> 导出
+            </a>
+        </div>
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+<div th:include="include :: footer"></div>
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('system:paperReview:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('system:paperReview:remove')}]];
+    var datas = [[${@dict.getType('user_yes_no')}]];
+    var paperStatus = [[${@dict.getType('user_paper_status')}]];
 
-							<li>
-								下载次数：<input type="text" name="downloadTimes"/>
-							</li>
+    var prefix = ctx + "system/paperReview";
 
-							<li>
-								评价次数：<input type="text" name="appraisalTimes"/>
-							</li>
-
-							<li>
-								预览次数：<input type="text" name="previewTimes"/>
-							</li>
-
-							<li>
-								论文文件路径：<input type="text" name="paperUrl"/>
-							</li>
-
-							<li>
-								更新时间：<input type="text" name="updateTime"/>
-							</li>
-
-							<li>
-								创建时间：<input type="text" name="createTime"/>
-							</li>
-
-							<li>
-								论文状态：<input type="text" name="status"/>
-							</li>
-
-							<li>
-								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
-								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
-							</li>
-						</ul>
-					</div>
-				</form>
-			</div>
-			
-	        <div class="btn-group-sm" id="toolbar" role="group">
-				<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:paperReview:add">
-					<i class="fa fa-plus"></i> 添加
-				</a>
-				<a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()" shiro:hasPermission="system:paperReview:edit">
-					<i class="fa fa-edit"></i> 修改
-				</a>
-				<a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()" shiro:hasPermission="system:paperReview:remove">
-					<i class="fa fa-remove"></i> 删除
-				</a>
-				<a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:paperReview:export">
-						<i class="fa fa-download"></i> 导出
-				 </a>
-			</div>
-			<div class="col-sm-12 select-table table-striped">
-				<table id="bootstrap-table" data-mobile-responsive="true"></table>
-			</div>
-		</div>
-	</div>
-    <div th:include="include :: footer"></div>
-    <script th:inline="javascript">
-        var editFlag = [[${@permission.hasPermi('system:paperReview:edit')}]];
-        var removeFlag = [[${@permission.hasPermi('system:paperReview:remove')}]];
-        var prefix = ctx + "system/paperReview";
-
-        $(function() {
-            var options = {
-                url: prefix + "/list",
-                createUrl: prefix + "/add",
-                updateUrl: prefix + "/edit/{id}",
-                removeUrl: prefix + "/remove",
-				exportUrl: prefix + "/export",
-                modalName: "论文",
-		        showExport: true,
-                columns: [{
-		            checkbox: true
-		        },
-				{
-					field : 'id', 
-					title : 'id',
-					visible: false
-				},
-				{
-					field : 'title', 
-					title : '论文标题',
-					sortable: true
-				},
-				{
-					field : 'user', 
-					title : '上传者',
-					sortable: true
-				},
-				{
-					field : 'author', 
-					title : '作者',
-					sortable: true
-				},
-				{
-					field : 'isReview', 
-					title : '是否审核',
-					sortable: true
-				},
-				{
-					field : 'isPass', 
-					title : '是否通过',
-					sortable: true
-				},
-				{
-					field : 'downloadTimes', 
-					title : '下载次数',
-					sortable: true
-				},
-				{
-					field : 'appraisalTimes', 
-					title : '评价次数',
-					sortable: true
-				},
-				{
-					field : 'previewTimes', 
-					title : '预览次数',
-					sortable: true
-				},
-				{
-					field : 'paperUrl', 
-					title : '论文文件路径',
-					sortable: true
-				},
-				{
-					field : 'updateTime', 
-					title : '更新时间',
-					sortable: true
-				},
-				{
-					field : 'createTime', 
-					title : '创建时间',
-					sortable: true
-				},
-				{
-					field : 'status', 
-					title : '论文状态',
-					sortable: true
-				},
-		        {
-		            title: '操作',
-		            align: 'center',
-		            formatter: function(value, row, index) {
-		            	var actions = [];
-		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+    $(function () {
+        var options = {
+            url: prefix + "/list",
+            createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{id}",
+            removeUrl: prefix + "/remove",
+            exportUrl: prefix + "/export",
+            modalName: "论文",
+            showExport: true,
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field: 'id',
+                    title: 'id',
+                    visible: false
+                },
+                {
+                    field: 'title',
+                    title: '论文标题',
+                    sortable: true
+                },
+                {
+                    field: 'user',
+                    title: '上传者',
+                    sortable: true
+                },
+                {
+                    field: 'author',
+                    title: '作者',
+                    sortable: true
+                },
+                {
+                    field: 'isReview',
+                    title: '是否审核',
+                    formatter: function (value, row, index) {
+                        return $.table.selectDictLabel(datas, value);
+                    }
+                },
+                {
+                    field: 'isPass',
+                    title: '是否通过',
+                    formatter: function (value, row, index) {
+                        return $.table.selectDictLabel(datas, value);
+                    }
+                },
+                {
+                    field: 'downloadTimes',
+                    title: '下载次数',
+                    sortable: true
+                },
+                {
+                    field: 'appraisalTimes',
+                    title: '评价次数',
+                    sortable: true
+                },
+                {
+                    field: 'previewTimes',
+                    title: '预览次数',
+                    sortable: true
+                },
+                {
+                    field: 'paperUrl',
+                    title: '论文文件路径',
+                    sortable: true
+                },
+                {
+                    field: 'updateTime',
+                    title: '更新时间',
+                    sortable: true
+                },
+                {
+                    field: 'createTime',
+                    title: '创建时间',
+                    sortable: true
+                },
+                {
+                    field: 'status',
+                    title: '论文状态',
+                    formatter: function (value, row, index) {
+                        return $.table.selectDictLabel(paperStatus, value);
+                    }
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
                         actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
-						return actions.join('');
-		            }
-		        }]
-            };
-            $.table.init(options);
-        });
-    </script>
+                        return actions.join('');
+                    }
+                }]
+        };
+        $.table.init(options);
+    });
+</script>
 </body>
 </html>

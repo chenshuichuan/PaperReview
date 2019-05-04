@@ -2,6 +2,8 @@ package com.ruoyi.project.system.paper.controller;
 
 import java.util.List;
 
+import com.ruoyi.project.system.paperType.domain.PaperType;
+import com.ruoyi.project.system.paperType.service.IPaperTypeService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,10 +35,15 @@ public class PaperController extends BaseController {
 
     @Autowired
     private IPaperService paperService;
+    @Autowired
+    private IPaperTypeService paperTypeService;
 
     @RequiresPermissions("system:paper:view")
     @GetMapping()
-    public String paper() {
+    public String paper(ModelMap mmap) {
+
+        List<PaperType> paperTypeList = paperTypeService.selectPaperTypeList(new PaperType());
+        mmap.put("paperTypeList",paperTypeList);
         return prefix + "/paper";
     }
 
@@ -69,7 +76,9 @@ public class PaperController extends BaseController {
      * 新增论文
      */
     @GetMapping("/add")
-    public String add() {
+    public String add(ModelMap mmap) {
+        List<PaperType> paperTypeList = paperTypeService.selectPaperTypeList(new PaperType());
+        mmap.put("paperTypeList",paperTypeList);
         return prefix + "/add";
     }
 
@@ -91,6 +100,9 @@ public class PaperController extends BaseController {
     public String edit(@PathVariable("id") Integer id, ModelMap mmap) {
         Paper paper = paperService.selectPaperById(id);
         mmap.put("paper", paper);
+
+        List<PaperType> paperTypeList = paperTypeService.selectPaperTypeList(new PaperType());
+        mmap.put("paperTypeList",paperTypeList);
         return prefix + "/edit";
     }
 

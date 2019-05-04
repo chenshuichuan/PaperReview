@@ -34,6 +34,13 @@ public class PaperType extends BaseEntity {
      */
     @Column(name = "type_value")
     private String typeValue;
+    public PaperType() {
+
+    }
+    public PaperType(String typeLable, String typeValue) {
+        this.typeLable = typeLable;
+        this.typeValue = typeValue;
+    }
 
     public void setId(Integer id) {
         this.id = id;

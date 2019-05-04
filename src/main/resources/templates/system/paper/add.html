@@ -1,102 +1,113 @@
 <!DOCTYPE html>
-<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
 <head>
-	<th:block th:include="include :: header('新增论文')" />
+    <th:block th:include="include :: header('新增论文')"/>
 </head>
 <body class="white-bg">
-    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
-        <form class="form-horizontal m" id="form-paper-add">
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">论文标题：</label>
-				<div class="col-sm-8">
-					<input id="title" name="title" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">上传者：</label>
-				<div class="col-sm-8">
-					<input id="user" name="user" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">作者：</label>
-				<div class="col-sm-8">
-					<input id="author" name="author" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">是否审核：</label>
-				<div class="col-sm-8">
-					<input id="isReview" name="isReview" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">是否通过：</label>
-				<div class="col-sm-8">
-					<input id="isPass" name="isPass" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">下载次数：</label>
-				<div class="col-sm-8">
-					<input id="downloadTimes" name="downloadTimes" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">评价次数：</label>
-				<div class="col-sm-8">
-					<input id="appraisalTimes" name="appraisalTimes" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">预览次数：</label>
-				<div class="col-sm-8">
-					<input id="previewTimes" name="previewTimes" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">论文文件路径：</label>
-				<div class="col-sm-8">
-					<input id="paperUrl" name="paperUrl" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">更新时间：</label>
-				<div class="col-sm-8">
-					<input id="updateTime" name="updateTime" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">创建时间：</label>
-				<div class="col-sm-8">
-					<input id="createTime" name="createTime" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">论文状态：</label>
-				<div class="col-sm-8">
-					<input id="status" name="status" class="form-control" type="text">
-				</div>
-			</div>
-		</form>
-	</div>
-    <div th:include="include::footer"></div>
-    <script type="text/javascript">
-		var prefix = ctx + "system/paper"
-		$("#form-paper-add").validate({
-			rules:{
-				xxxx:{
-					required:true,
-				},
-			},
-			focusCleanup: true
-		});
-		
-		function submitHandler() {
-	        if ($.validate.form()) {
-	            $.operate.save(prefix + "/add", $('#form-paper-add').serialize());
-	        }
-	    }
-	</script>
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-paper-add">
+        <div class="form-group">
+            <label class="col-sm-3 control-label">论文标题：</label>
+            <div class="col-sm-8">
+                <input id="title" name="title" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group" hidden>
+            <label class="col-sm-3 control-label">上传者：</label>
+            <div class="col-sm-8">
+                <input id="user" name="user" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">作者：</label>
+            <div class="col-sm-8">
+                <input id="author" name="author" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">论文类型：</label>
+            <div class="col-sm-8">
+                <select id="paperType" name="paperType" class="form-control">
+                    <option th:each="paperType,typeStat:${paperTypeList}"
+                            th:value="${paperType.typeValue}"
+                            th:text="${paperType.typeLable}"></option>
+                </select>
+                <!--<input id="paperType" name="paperType" class="form-control" type="text">-->
+            </div>
+        </div>
+        <div class="form-group" hidden>
+            <label class="col-sm-3 control-label">是否审核：</label>
+            <div class="col-sm-8">
+                <input id="isReview" name="isReview" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group" hidden>
+            <label class="col-sm-3 control-label">是否通过：</label>
+            <div class="col-sm-8">
+                <input id="isPass" name="isPass" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group" hidden>
+            <label class="col-sm-3 control-label">下载次数：</label>
+            <div class="col-sm-8">
+                <input id="downloadTimes" name="downloadTimes" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group" hidden>
+            <label class="col-sm-3 control-label">评价次数：</label>
+            <div class="col-sm-8">
+                <input id="appraisalTimes" name="appraisalTimes" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group" hidden>
+            <label class="col-sm-3 control-label">预览次数：</label>
+            <div class="col-sm-8">
+                <input id="previewTimes" name="previewTimes" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">论文文件路径：</label>
+            <div class="col-sm-8">
+                <input id="paperUrl" name="paperUrl" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group" hidden>
+            <label class="col-sm-3 control-label">更新时间：</label>
+            <div class="col-sm-8">
+                <input id="updateTime" name="updateTime" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group" hidden>
+            <label class="col-sm-3 control-label">创建时间：</label>
+            <div class="col-sm-8">
+                <input id="createTime" name="createTime" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">论文状态：</label>
+            <div class="col-sm-8">
+                <input id="status" name="status" class="form-control" type="text">
+            </div>
+        </div>
+    </form>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript">
+    var prefix = ctx + "system/paper"
+    $("#form-paper-add").validate({
+        rules: {
+            xxxx: {
+                required: true,
+            },
+        },
+        focusCleanup: true
+    });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            $.operate.save(prefix + "/add", $('#form-paper-add').serialize());
+        }
+    }
+</script>
 </body>
 </html>

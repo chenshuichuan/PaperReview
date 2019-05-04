@@ -35,6 +35,11 @@ public class Paper extends BaseEntity {
     @Column(name = "user")
     private String user;
     /**
+     * 论文类型
+     */
+    @Column(name = "paper_type")
+    private String paperType;
+    /**
      * 作者
      */
     @Column(name = "author")
@@ -74,6 +79,33 @@ public class Paper extends BaseEntity {
      */
     @Column(name = "status")
     private Integer status;
+
+    public Paper() {
+
+    }
+    public Paper(String title, String user, String paperType, String author,
+                 Integer isReview, Integer isPass, Integer downloadTimes,
+                 Integer appraisalTimes, Integer previewTimes, String paperUrl, Integer status) {
+        this.title = title;
+        this.user = user;
+        this.paperType = paperType;
+        this.author = author;
+        this.isReview = isReview;
+        this.isPass = isPass;
+        this.downloadTimes = downloadTimes;
+        this.appraisalTimes = appraisalTimes;
+        this.previewTimes = previewTimes;
+        this.paperUrl = paperUrl;
+        this.status = status;
+    }
+
+    public String getPaperType() {
+        return paperType;
+    }
+
+    public void setPaperType(String paperType) {
+        this.paperType = paperType;
+    }
 
     public void setId(Integer id) {
         this.id = id;

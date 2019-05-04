@@ -50,6 +50,17 @@ public class PaperComment extends BaseEntity {
     @Column(name = "is_public")
     private Integer isPublic;
 
+    public PaperComment() {
+
+    }
+    public PaperComment(Integer paperId, Integer userId, String userName,
+                        String content, Integer isPublic) {
+        this.paperId = paperId;
+        this.userId = userId;
+        this.userName = userName;
+        this.content = content;
+        this.isPublic = isPublic;
+    }
     public void setId(Integer id) {
         this.id = id;
     }
