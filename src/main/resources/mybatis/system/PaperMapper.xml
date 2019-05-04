@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.system.paper.mapper.PaperMapper">
+    
+    <resultMap type="Paper" id="PaperResult">
+        <result property="id"    column="id"    />
+        <result property="title"    column="title"    />
+        <result property="user"    column="user"    />
+        <result property="author"    column="author"    />
+        <result property="isReview"    column="is_review"    />
+        <result property="isPass"    column="is_pass"    />
+        <result property="downloadTimes"    column="download_times"    />
+        <result property="appraisalTimes"    column="appraisal_times"    />
+        <result property="previewTimes"    column="preview_times"    />
+        <result property="paperUrl"    column="paper_url"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+	
+	<sql id="selectPaperVo">
+        select id, title, user, author, is_review, is_pass, download_times, appraisal_times, preview_times, paper_url, update_time, create_time, status from pr_paper
+    </sql>
+	
+    <select id="selectPaperList" parameterType="Paper" resultMap="PaperResult">
+        <include refid="selectPaperVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+             <if test="title != null  and title != '' "> and title = #{title}</if>
+             <if test="user != null  and user != '' "> and user = #{user}</if>
+             <if test="author != null  and author != '' "> and author = #{author}</if>
+             <if test="isReview != null "> and is_review = #{isReview}</if>
+             <if test="isPass != null "> and is_pass = #{isPass}</if>
+             <if test="downloadTimes != null "> and download_times = #{downloadTimes}</if>
+             <if test="appraisalTimes != null "> and appraisal_times = #{appraisalTimes}</if>
+             <if test="previewTimes != null "> and preview_times = #{previewTimes}</if>
+             <if test="paperUrl != null  and paperUrl != '' "> and paper_url = #{paperUrl}</if>
+             <if test="updateTime != null "> and update_time = #{updateTime}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="status != null "> and status = #{status}</if>
+         </where>
+    </select>
+    
+    <select id="selectPaperById" parameterType="Integer" resultMap="PaperResult">
+        <include refid="selectPaperVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPaper" parameterType="Paper">
+        insert into pr_paper
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">id,</if>
+			<if test="title != null  and title != ''  ">title,</if>
+			<if test="user != null  and user != ''  ">user,</if>
+			<if test="author != null  and author != ''  ">author,</if>
+			<if test="isReview != null  ">is_review,</if>
+			<if test="isPass != null  ">is_pass,</if>
+			<if test="downloadTimes != null  ">download_times,</if>
+			<if test="appraisalTimes != null  ">appraisal_times,</if>
+			<if test="previewTimes != null  ">preview_times,</if>
+			<if test="paperUrl != null  and paperUrl != ''  ">paper_url,</if>
+			<if test="updateTime != null  ">update_time,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="status != null  ">status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">#{id},</if>
+			<if test="title != null  and title != ''  ">#{title},</if>
+			<if test="user != null  and user != ''  ">#{user},</if>
+			<if test="author != null  and author != ''  ">#{author},</if>
+			<if test="isReview != null  ">#{isReview},</if>
+			<if test="isPass != null  ">#{isPass},</if>
+			<if test="downloadTimes != null  ">#{downloadTimes},</if>
+			<if test="appraisalTimes != null  ">#{appraisalTimes},</if>
+			<if test="previewTimes != null  ">#{previewTimes},</if>
+			<if test="paperUrl != null  and paperUrl != ''  ">#{paperUrl},</if>
+			<if test="updateTime != null  ">#{updateTime},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="status != null  ">#{status},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updatePaper" parameterType="Paper">
+        update pr_paper
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null  and title != ''  ">title = #{title},</if>
+            <if test="user != null  and user != ''  ">user = #{user},</if>
+            <if test="author != null  and author != ''  ">author = #{author},</if>
+            <if test="isReview != null  ">is_review = #{isReview},</if>
+            <if test="isPass != null  ">is_pass = #{isPass},</if>
+            <if test="downloadTimes != null  ">download_times = #{downloadTimes},</if>
+            <if test="appraisalTimes != null  ">appraisal_times = #{appraisalTimes},</if>
+            <if test="previewTimes != null  ">preview_times = #{previewTimes},</if>
+            <if test="paperUrl != null  and paperUrl != ''  ">paper_url = #{paperUrl},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="status != null  ">status = #{status},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deletePaperById" parameterType="Integer">
+        delete from pr_paper where id = #{id}
+    </delete>
+	
+    <delete id="deletePaperByIds" parameterType="String">
+        delete from pr_paper where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

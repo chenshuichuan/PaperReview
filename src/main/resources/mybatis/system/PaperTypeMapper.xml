@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.system.paperType.mapper.PaperTypeMapper">
+    
+    <resultMap type="PaperType" id="PaperTypeResult">
+        <result property="id"    column="id"    />
+        <result property="typeLable"    column="type_lable"    />
+        <result property="typeValue"    column="type_value"    />
+    </resultMap>
+	
+	<sql id="selectPaperTypeVo">
+        select id, type_lable, type_value from pr_paper_type
+    </sql>
+	
+    <select id="selectPaperTypeList" parameterType="PaperType" resultMap="PaperTypeResult">
+        <include refid="selectPaperTypeVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+             <if test="typeLable != null  and typeLable != '' "> and type_lable = #{typeLable}</if>
+             <if test="typeValue != null  and typeValue != '' "> and type_value = #{typeValue}</if>
+         </where>
+    </select>
+    
+    <select id="selectPaperTypeById" parameterType="Integer" resultMap="PaperTypeResult">
+        <include refid="selectPaperTypeVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPaperType" parameterType="PaperType">
+        insert into pr_paper_type
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">id,</if>
+			<if test="typeLable != null  and typeLable != ''  ">type_lable,</if>
+			<if test="typeValue != null  and typeValue != ''  ">type_value,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">#{id},</if>
+			<if test="typeLable != null  and typeLable != ''  ">#{typeLable},</if>
+			<if test="typeValue != null  and typeValue != ''  ">#{typeValue},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updatePaperType" parameterType="PaperType">
+        update pr_paper_type
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="typeLable != null  and typeLable != ''  ">type_lable = #{typeLable},</if>
+            <if test="typeValue != null  and typeValue != ''  ">type_value = #{typeValue},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deletePaperTypeById" parameterType="Integer">
+        delete from pr_paper_type where id = #{id}
+    </delete>
+	
+    <delete id="deletePaperTypeByIds" parameterType="String">
+        delete from pr_paper_type where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>
