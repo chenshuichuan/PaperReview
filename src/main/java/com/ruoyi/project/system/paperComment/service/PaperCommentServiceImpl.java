@@ -1,7 +1,10 @@
 package com.ruoyi.project.system.paperComment.service;
 
+import java.util.Date;
 import java.util.List;
 
+import com.ruoyi.common.utils.security.ShiroUtils;
+import com.ruoyi.project.system.user.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.project.system.paperComment.mapper.PaperCommentMapper;
@@ -50,6 +53,10 @@ public class PaperCommentServiceImpl implements IPaperCommentService {
      */
     @Override
     public int insertPaperComment(PaperComment paperComment) {
+        User user = ShiroUtils.getSysUser();
+        paperComment.setUserId(user.getUserId().intValue());
+        paperComment.setUserName(user.getUserName());
+        paperComment.setCreateTime(new Date());
         return paperCommentMapper.insertPaperComment(paperComment);
     }
 

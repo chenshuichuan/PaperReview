@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('新增论文')"/>
+    <div th:include="include::file"></div>
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <div style="margin-top:30px; width: 850px;height: 490px;" id="example1"></div>
+</div>
+<script src="../../../static/ruoyi/js/pdfobject.min.js" th:src="@{/ruoyi/js/pdfobject.min.js}"></script>
+<div th:include="include::footer"></div>
+<script type="text/javascript" th:inline="javascript">
+    var prefix = ctx + "system/paper";
+    //加载招聘页面的pdf
+    /*<![CDATA[*/
+    //拿到模型
+    var paper = /*[[${paper}]]*/ null;
+    /*]]>*/
+    if(paper!=null){
+        loadPDF(paper.paperUrl);
+    }
+    function loadPDF(path) {
+        var options = {
+            pdfOpenParams: {
+                pagemode: "thumbs",
+                navpanes: 0,
+                toolbar: 0,
+                statusbar: 0
+            }
+        };
+        var pdffile = "/profile/pdf-error.pdf";
+        if (path == null || path == undefined || path.length < 1) alert("未找到论文文件，请检查数据！");
+        else pdffile = path;
+        //PDFObject.embed(pdffile, "#example1");
+        var myPDF = PDFObject.embed(pdffile, "#example1", options);
+    }
+</script>
+</body>
+</html>

@@ -1,10 +1,17 @@
 package com.ruoyi.project.system.paper.controller;
 
+import java.io.File;
 import java.util.List;
 
+import com.ruoyi.common.utils.IpUtils;
+import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.common.utils.file.FileUploadUtils;
+import com.ruoyi.common.utils.security.ShiroUtils;
 import com.ruoyi.project.system.paperType.domain.PaperType;
 import com.ruoyi.project.system.paperType.service.IPaperTypeService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -21,6 +28,7 @@ import com.ruoyi.framework.web.controller.BaseController;
 import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.common.utils.poi.ExcelUtil;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 论文信息操作处理
@@ -31,6 +39,7 @@ import com.ruoyi.common.utils.poi.ExcelUtil;
 @Controller
 @RequestMapping("/system/paper")
 public class PaperController extends BaseController {
+    private static final Logger logger = LoggerFactory.getLogger(PaperController.class);
     private String prefix = "system/paper";
 
     @Autowired
@@ -55,6 +64,8 @@ public class PaperController extends BaseController {
     @ResponseBody
     public TableDataInfo list(Paper paper) {
         startPage();
+        //默认上传页仅显示登陆者自己的论文
+        paper.setUser(ShiroUtils.getSysUser().getUserName());
         List<Paper> list = paperService.selectPaperList(paper);
         return getDataTable(list);
     }
@@ -79,6 +90,7 @@ public class PaperController extends BaseController {
     public String add(ModelMap mmap) {
         List<PaperType> paperTypeList = paperTypeService.selectPaperTypeList(new PaperType());
         mmap.put("paperTypeList",paperTypeList);
+        mmap.put("paper",new Paper());
         return prefix + "/add";
     }
 
@@ -89,8 +101,31 @@ public class PaperController extends BaseController {
     @Log(title = "论文", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(Paper paper) {
-        return toAjax(paperService.insertPaper(paper));
+    public AjaxResult addSave(MultipartFile file, Paper paper) {
+        int rtn = 0;
+       // logger.info(paper.toString());
+        try {
+            if (file == null) {
+                logger.info("file is null");
+            }
+            else{
+                String filePath = FileUploadUtils.upload(FileUploadUtils.getDefaultBaseDir(),file,".pdf");
+                logger.info("uploadFilePath="+filePath);
+                paper.setPaperUrl("/profile/"+filePath);
+                paper.setFileUrl(FileUploadUtils.getDefaultBaseDir()+filePath);
+            }
+            // 修改
+            if (paper.getUpdateFlag() == 1 && paper.getId() > 0) {
+                paper = paperService.updatePaperInfoByPaper(paper);
+                rtn = paperService.updatePaper(paper);
+            } else {//新增
+                rtn = paperService.insertPaper(paper);
+            }
+        } catch (Exception e) {
+            logger.error("保存失败，请检查后重试！", e);
+            return error(e.getMessage());
+        }
+        return toAjax(rtn);
     }
 
     /**
@@ -100,10 +135,11 @@ public class PaperController extends BaseController {
     public String edit(@PathVariable("id") Integer id, ModelMap mmap) {
         Paper paper = paperService.selectPaperById(id);
         mmap.put("paper", paper);
-
         List<PaperType> paperTypeList = paperTypeService.selectPaperTypeList(new PaperType());
         mmap.put("paperTypeList",paperTypeList);
-        return prefix + "/edit";
+        String ip = IpUtils.getHostIp();
+        mmap.put("PaperUrl",ip+paper.getPaperUrl());
+        return prefix + "/add";
     }
 
     /**
@@ -116,7 +152,21 @@ public class PaperController extends BaseController {
     public AjaxResult editSave(Paper paper) {
         return toAjax(paperService.updatePaper(paper));
     }
-
+//    private Files dealFile(MultipartFile file, Files files) throws Exception {
+//        //if (file == null || "2".equals(files.getType())) return files;
+//        if (file == null ){
+//            return files;
+//        }
+//        String suffix = FileUploadUtils.dealName(file.getOriginalFilename());
+//        if (StringUtils.isEmpty(suffix)){
+//            throw new Exception();
+//        }
+//        String name = Save_Url + files.getFileName() + "." + suffix;
+//        files.setUrl(name);
+//        files.setSuffix(suffix);
+//
+//        return files;
+//    }
     /**
      * 删除论文
      */
@@ -128,4 +178,13 @@ public class PaperController extends BaseController {
         return toAjax(paperService.deletePaperByIds(ids));
     }
 
+    /**
+     * 预览论文
+     */
+    @GetMapping("/preview/{id}")
+    public String preview(@PathVariable("id") Integer id, ModelMap mmap) {
+        Paper paper = paperService.selectPaperById(id);
+        mmap.put("paper", paper);
+        return prefix + "/preview";
+    }
 }

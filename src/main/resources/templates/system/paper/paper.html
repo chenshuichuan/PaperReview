@@ -13,10 +13,6 @@
                         <li>
                             论文标题：<input type="text" name="title"/>
                         </li>
-
-                        <li>
-                            上传者：<input type="text" name="user"/>
-                        </li>
                         <li>
                             论文类型：
                             <select name="paperType">
@@ -30,20 +26,9 @@
                         <li>
                             作者：<input type="text" name="author"/>
                         </li>
-
                         <li>
-                            是否审核：
-                            <select name="isReview" th:with="type=${@dict.getType('user_yes_no')}">
-                                <option value="">所有</option>
-                                <option th:each="dict : ${type}" th:text="${dict.dictLabel}"
-                                        th:value="${dict.dictValue}"></option>
-                            </select>
-                            <!--<input type="text" name="isReview"/>-->
-                        </li>
-
-                        <li>
-                            是否通过：
-                            <select name="isPass" th:with="type=${@dict.getType('user_yes_no')}">
+                            审核状态：
+                            <select name="isPass" th:with="type=${@dict.getType('user_paper_status')}">
                                 <option value="">所有</option>
                                 <option th:each="dict : ${type}" th:text="${dict.dictLabel}"
                                         th:value="${dict.dictValue}"></option>
@@ -70,6 +55,8 @@
                 </div>
             </form>
         </div>
+
+
 
         <div class="btn-group-sm" id="toolbar" role="group">
             <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:paper:add">
@@ -126,7 +113,7 @@
                 {
                     field: 'user',
                     title: '上传者',
-                    sortable: true
+                    visible: false
                 },
                 {
                     field: 'paperType',
@@ -139,15 +126,36 @@
                     sortable: true
                 },
                 {
-                    field: 'isReview',
-                    title: '是否审核',
+                    title: '下载论文',
+                    align: 'center',
                     formatter: function (value, row, index) {
-                        return $.table.selectDictLabel(datas, value);
+                        return '<i style=\"cursor:pointer\" class=\"fa fa-cloud-download text-success fa-2x\" onclick="downloadFile(\'' + row.paperUrl + '\')"></i> ';
+                    }
+                },
+                {
+                    title: '预览论文',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        return '<i style=\"cursor:pointer\" class=\"fa fa-toggle-right text-info fa-2x\" onclick="previewPDF(\'' + row.title + '\',\'' + row.id +'\')"></i> ';
+                    }
+                },
+                {
+                    field: 'status',
+                    title: '论文状态',
+                    formatter: function (value, row, index) {
+                        return $.table.selectDictLabel(paperStatus, value);
                     }
                 },
                 {
                     field: 'isPass',
-                    title: '是否通过',
+                    title: '审核状态',
+                    formatter: function (value, row, index) {
+                        return $.table.selectDictLabel(paperStatus, value);
+                    }
+                },
+                {
+                    field: 'isPublic',
+                    title: '是否公开',
                     formatter: function (value, row, index) {
                         return $.table.selectDictLabel(datas, value);
                     }
@@ -170,7 +178,7 @@
                 {
                     field: 'paperUrl',
                     title: '论文文件路径',
-                    sortable: true
+                    visible: false
                 },
                 {
                     field: 'updateTime',
@@ -180,14 +188,7 @@
                 {
                     field: 'createTime',
                     title: '创建时间',
-                    sortable: true
-                },
-                {
-                    field: 'status',
-                    title: '论文状态',
-                    formatter: function (value, row, index) {
-                        return $.table.selectDictLabel(paperStatus, value);
-                    }
+                    visible: false
                 },
                 {
                     title: '操作',
@@ -202,6 +203,14 @@
         };
         $.table.init(options);
     });
+
+
+    function downloadFile(url) {
+        window.open(url,"_blank");
+    }
+    function previewPDF(title, id) {
+        $.modal.open("预览：" +title, prefix+"/preview/"+id,900,500);
+    }
 </script>
 </body>
 </html>

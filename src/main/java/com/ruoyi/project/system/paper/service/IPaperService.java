@@ -51,4 +51,6 @@ public interface IPaperService {
      */
     public int deletePaperByIds(String ids);
 
+    public int updatePaper(Paper files, Boolean isFile);
+    public Paper updatePaperInfoByPaper(Paper paper);
 }

@@ -11,10 +11,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="author"    column="author"    />
         <result property="isReview"    column="is_review"    />
         <result property="isPass"    column="is_pass"    />
+        <result property="isPublic"    column="is_public"    />
         <result property="downloadTimes"    column="download_times"    />
         <result property="appraisalTimes"    column="appraisal_times"    />
         <result property="previewTimes"    column="preview_times"    />
         <result property="paperUrl"    column="paper_url"    />
+        <result property="fileUrl"    column="file_url"    />
         <result property="paperType"    column="paper_type"    />
         <result property="updateTime"    column="update_time"    />
         <result property="createTime"    column="create_time"    />
@@ -22,7 +24,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 	
 	<sql id="selectPaperVo">
-        select id, title, user,paper_type, author, is_review, is_pass, download_times, appraisal_times, preview_times, paper_url, update_time, create_time, status from pr_paper
+        select id, title, user,paper_type, author, is_review, is_pass,is_public, download_times, appraisal_times, preview_times, paper_url,file_url, update_time, create_time, status from pr_paper
     </sql>
 	
     <select id="selectPaperList" parameterType="Paper" resultMap="PaperResult">
@@ -35,10 +37,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="author != null  and author != '' "> and author like concat('%', #{author}, '%')</if>
              <if test="isReview != null "> and is_review = #{isReview}</if>
              <if test="isPass != null "> and is_pass = #{isPass}</if>
+             <if test="isPublic != null "> and is_public = #{isPublic}</if>
              <if test="downloadTimes != null "> and download_times = #{downloadTimes}</if>
              <if test="appraisalTimes != null "> and appraisal_times = #{appraisalTimes}</if>
              <if test="previewTimes != null "> and preview_times = #{previewTimes}</if>
              <if test="paperUrl != null  and paperUrl != '' "> and paper_url = #{paperUrl}</if>
+             <if test="fileUrl != null  and fileUrl != '' "> and file_url = #{fileUrl}</if>
              <if test="updateTime != null "> and update_time = #{updateTime}</if>
              <if test="createTime != null "> and create_time = #{createTime}</if>
              <if test="status != null "> and status = #{status}</if>
@@ -60,10 +64,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="author != null  and author != ''  ">author,</if>
 			<if test="isReview != null  ">is_review,</if>
 			<if test="isPass != null  ">is_pass,</if>
+            <if test="isPublic != null  ">is_public,</if>
 			<if test="downloadTimes != null  ">download_times,</if>
 			<if test="appraisalTimes != null  ">appraisal_times,</if>
 			<if test="previewTimes != null  ">preview_times,</if>
 			<if test="paperUrl != null  and paperUrl != ''  ">paper_url,</if>
+            <if test="fileUrl != null  and fileUrl != ''  ">file_url,</if>
 			<if test="updateTime != null  ">update_time,</if>
 			<if test="createTime != null  ">create_time,</if>
 			<if test="status != null  ">status,</if>
@@ -76,10 +82,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="author != null  and author != ''  ">#{author},</if>
 			<if test="isReview != null  ">#{isReview},</if>
 			<if test="isPass != null  ">#{isPass},</if>
+            <if test="isPublic != null  ">#{isPublic},</if>
 			<if test="downloadTimes != null  ">#{downloadTimes},</if>
 			<if test="appraisalTimes != null  ">#{appraisalTimes},</if>
 			<if test="previewTimes != null  ">#{previewTimes},</if>
 			<if test="paperUrl != null  and paperUrl != ''  ">#{paperUrl},</if>
+            <if test="fileUrl != null  and fileUrl != ''  ">#{fileUrl},</if>
 			<if test="updateTime != null  ">#{updateTime},</if>
 			<if test="createTime != null  ">#{createTime},</if>
 			<if test="status != null  ">#{status},</if>
@@ -95,10 +103,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="author != null  and author != ''  ">author = #{author},</if>
             <if test="isReview != null  ">is_review = #{isReview},</if>
             <if test="isPass != null  ">is_pass = #{isPass},</if>
+            <if test="isPublic != null  ">is_public = #{isPublic},</if>
             <if test="downloadTimes != null  ">download_times = #{downloadTimes},</if>
             <if test="appraisalTimes != null  ">appraisal_times = #{appraisalTimes},</if>
             <if test="previewTimes != null  ">preview_times = #{previewTimes},</if>
             <if test="paperUrl != null  and paperUrl != ''  ">paper_url = #{paperUrl},</if>
+            <if test="fileUrl != null  and fileUrl != ''  ">file_url = #{fileUrl},</if>
             <if test="updateTime != null  ">update_time = #{updateTime},</if>
             <if test="createTime != null  ">create_time = #{createTime},</if>
             <if test="status != null  ">status = #{status},</if>

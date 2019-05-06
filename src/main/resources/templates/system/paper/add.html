@@ -2,111 +2,169 @@
 <html lang="zh" xmlns:th="http://www.thymeleaf.org">
 <head>
     <th:block th:include="include :: header('新增论文')"/>
+    <div th:include="include::file"></div>
 </head>
 <body class="white-bg">
 <div class="wrapper wrapper-content animated fadeInRight ibox-content">
-    <form class="form-horizontal m" id="form-paper-add">
+
+    <form class="form-horizontal m" id="form-file-add" action="/system/paper/add" name="form-file-add" method="POST"
+          enctype="multipart/form-data" th:object="${paper}"> <!--method="POST"  enctype="multipart/form-data">-->
+        <input type="hidden" id="id" th:field="*{id}" name="id">
+        <input type="hidden" id="fileName" name="fileName" th:value="${PaperUrl}"  >
+        <div class="form-group">
+            <label class="col-sm-3 control-label">文件：</label>
+            <div class="col-sm-8">
+                <div class="file-loading" style="width: 80%">
+                    <input id="files" class="file" name="file" type="file" data-show-upload="false" language="zh"
+                           data-show-Cancel="false" data-theme="fas">
+                </div>
+            </div>
+        </div>
         <div class="form-group">
             <label class="col-sm-3 control-label">论文标题：</label>
             <div class="col-sm-8">
-                <input id="title" name="title" class="form-control" type="text">
-            </div>
-        </div>
-        <div class="form-group" hidden>
-            <label class="col-sm-3 control-label">上传者：</label>
-            <div class="col-sm-8">
-                <input id="user" name="user" class="form-control" type="text">
+                <input id="title" name="title" class="form-control" th:field="*{title}"  type="text">
             </div>
         </div>
         <div class="form-group">
             <label class="col-sm-3 control-label">作者：</label>
             <div class="col-sm-8">
-                <input id="author" name="author" class="form-control" type="text">
+                <input id="author" name="author" class="form-control" th:field="*{author}"  type="text">
             </div>
         </div>
         <div class="form-group">
             <label class="col-sm-3 control-label">论文类型：</label>
             <div class="col-sm-8">
-                <select id="paperType" name="paperType" class="form-control">
-                    <option th:each="paperType,typeStat:${paperTypeList}"
-                            th:value="${paperType.typeValue}"
-                            th:text="${paperType.typeLable}"></option>
+                <select id="paperType" name="paperType" class="form-control" th:field="*{paperType}"  type="text">
+                    <option th:each="pt,typeStat:${paperTypeList}"
+                            th:value="${pt.typeValue}"
+                            th:text="${pt.typeLable}"></option>
                 </select>
-                <!--<input id="paperType" name="paperType" class="form-control" type="text">-->
+                <!--<input id="paperType" name="paperType" class="form-control" >-->
             </div>
         </div>
-        <div class="form-group" hidden>
-            <label class="col-sm-3 control-label">是否审核：</label>
-            <div class="col-sm-8">
-                <input id="isReview" name="isReview" class="form-control" type="text">
-            </div>
-        </div>
-        <div class="form-group" hidden>
-            <label class="col-sm-3 control-label">是否通过：</label>
-            <div class="col-sm-8">
-                <input id="isPass" name="isPass" class="form-control" type="text">
-            </div>
-        </div>
-        <div class="form-group" hidden>
-            <label class="col-sm-3 control-label">下载次数：</label>
-            <div class="col-sm-8">
-                <input id="downloadTimes" name="downloadTimes" class="form-control" type="text">
-            </div>
-        </div>
-        <div class="form-group" hidden>
-            <label class="col-sm-3 control-label">评价次数：</label>
-            <div class="col-sm-8">
-                <input id="appraisalTimes" name="appraisalTimes" class="form-control" type="text">
-            </div>
-        </div>
-        <div class="form-group" hidden>
-            <label class="col-sm-3 control-label">预览次数：</label>
-            <div class="col-sm-8">
-                <input id="previewTimes" name="previewTimes" class="form-control" type="text">
-            </div>
-        </div>
+
         <div class="form-group">
-            <label class="col-sm-3 control-label">论文文件路径：</label>
+            <label class="col-sm-3 control-label">是否匿名：</label>
             <div class="col-sm-8">
-                <input id="paperUrl" name="paperUrl" class="form-control" type="text">
-            </div>
-        </div>
-        <div class="form-group" hidden>
-            <label class="col-sm-3 control-label">更新时间：</label>
-            <div class="col-sm-8">
-                <input id="updateTime" name="updateTime" class="form-control" type="text">
-            </div>
-        </div>
-        <div class="form-group" hidden>
-            <label class="col-sm-3 control-label">创建时间：</label>
-            <div class="col-sm-8">
-                <input id="createTime" name="createTime" class="form-control" type="text">
+                <select id="isPublic" name="isPublic" class="form-control" th:field="*{isPublic}" >
+                    <option value="0">匿名</option>
+                    <option value="1">公开</option>
+                </select>
+                <!--<input id="isPublic" name="isPublic" class="form-control" >-->
             </div>
         </div>
         <div class="form-group">
             <label class="col-sm-3 control-label">论文状态：</label>
             <div class="col-sm-8">
-                <input id="status" name="status" class="form-control" type="text">
+                <select id="status" name="status" class="form-control" th:field="*{status}">
+                    <option value="2">保存草稿</option>
+                    <option value="3">提交审核</option>
+                </select>
+                <!--<input id="remark" name="remark" class="form-control" >-->
             </div>
         </div>
     </form>
+
+
 </div>
+<script type="text/javascript" th:inline="javascript">
+    var types = "image";//默认图片
+    var captions = '[[${paper.paperUrl}]]';
+    //初始化插件基础信息
+    $("#files").fileinput({
+        language: 'zh',
+        maxFileCount: 1,
+        dropZoneEnabled: false,
+        initialPreview: [
+            '[[${PaperUrl}]]'
+        ],
+        initialPreviewConfig: [ //配置预览中的一些参数
+            {caption: captions, type: types, filetype: types, size: 329892, width: "120px", key: 1},
+        ],
+        showCaption: false,
+        allowedFileExtensions: ["pdf", "PDF"],
+        initialPreviewAsData: true,
+        overwriteInitial: true,
+        layoutTemplates: {
+            actionDelete: ''//预览页面的删除按钮设置为不显示
+        }
+    })
+</script>
 <div th:include="include::footer"></div>
 <script type="text/javascript">
-    var prefix = ctx + "system/paper"
+    var prefix = ctx + "system/paper";
+
+    var fileInput = document.getElementById('files');
+    // 监听change事件:
+    fileInput.addEventListener('change', function() {
+        // 检查文件是否选择:
+        if(!fileInput.value) {
+            //alert("文件未选择！");
+        }else{
+            // 获取File引用:
+            var file = fileInput.files[0];
+            //alert(file.name);
+            $("#fileName").val(file.name);
+        }
+    });
+
     $("#form-paper-add").validate({
         rules: {
-            xxxx: {
+            fileName: {
                 required: true,
+                accept: "application/pdf"
             },
+            title:{
+                required: true
+            },
+            author:{
+                required: true
+            }
         },
-        focusCleanup: true
+        messages: {
+            "fileName": {
+                remote: "请上传pdf文件！"
+            }
+        }
     });
 
     function submitHandler() {
         if ($.validate.form()) {
-            $.operate.save(prefix + "/add", $('#form-paper-add').serialize());
+            var form = new FormData();
+            var id = $("#id").val();
+            if (id) {
+                form.append("id", id);
+                form.append("updateFlag", 1);
+            } else {
+                form.append("updateFlag", 0);
+                //checkFileName();
+            }
+
+            var file = document.getElementById("files").files[0];
+            form.append("file", file);
+            //paper部分
+            form.append("title", $("#title").val());
+            form.append("author", $("#author").val());
+            form.append("paperType", $("#paperType").val());
+            form.append("isPublic", $("#isPublic").val());
+            form.append("status", $("#status").val());
+
+            $.ajax({
+                url: prefix + "/add",
+                data: form,
+                type: "POST",
+                dataType: "json",
+                processData: false,
+                contentType: false,
+                success: function (result) {
+                    $.operate.saveSuccess(result);
+                }
+            });
         }
+//        if ($.validate.form()) {
+//            $.operate.save(prefix + "/add", $('#form-paper-add').serialize());
+//        }
     }
 </script>
 </body>

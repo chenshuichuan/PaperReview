@@ -55,6 +55,11 @@ public class Paper extends BaseEntity {
     @Column(name = "is_pass")
     private Integer isPass;
     /**
+     * 是否匿名
+     */
+    @Column(name = "is_public")
+    private Integer isPublic;
+    /**
      * 下载次数
      */
     @Column(name = "download_times")
@@ -75,10 +80,20 @@ public class Paper extends BaseEntity {
     @Column(name = "paper_url")
     private String paperUrl;
     /**
+     * 文件路径
+     */
+    @Column(name = "file_url")
+    private String fileUrl;
+    /**
      * 论文状态
      */
     @Column(name = "status")
     private Integer status;
+
+    /**修改标识 0 新增 1 修改**/
+    @Transient
+    private int updateFlag;
+
 
     public Paper() {
 
@@ -194,22 +209,45 @@ public class Paper extends BaseEntity {
     public Integer getStatus() {
         return status;
     }
+    public int getUpdateFlag() {
+        return updateFlag;
+    }
 
+    public void setUpdateFlag(int updateFlag) {
+        this.updateFlag = updateFlag;
+    }
+
+    public String getFileUrl() {
+        return fileUrl;
+    }
+
+    public void setFileUrl(String fileUrl) {
+        this.fileUrl = fileUrl;
+    }
+
+    public Integer getIsPublic() {
+        return isPublic;
+    }
+
+    public void setIsPublic(Integer isPublic) {
+        this.isPublic = isPublic;
+    }
+    @Override
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
-                .append("id", getId())
-                .append("title", getTitle())
-                .append("user", getUser())
-                .append("author", getAuthor())
-                .append("isReview", getIsReview())
-                .append("isPass", getIsPass())
-                .append("downloadTimes", getDownloadTimes())
-                .append("appraisalTimes", getAppraisalTimes())
-                .append("previewTimes", getPreviewTimes())
-                .append("paperUrl", getPaperUrl())
-                .append("updateTime", getUpdateTime())
-                .append("createTime", getCreateTime())
-                .append("status", getStatus())
-                .toString();
+        return "Paper{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", user='" + user + '\'' +
+                ", paperType='" + paperType + '\'' +
+                ", author='" + author + '\'' +
+                ", isReview=" + isReview +
+                ", isPass=" + isPass +
+                ", isPublic=" + isPublic +
+                ", downloadTimes=" + downloadTimes +
+                ", appraisalTimes=" + appraisalTimes +
+                ", previewTimes=" + previewTimes +
+                ", paperUrl='" + paperUrl + '\'' +
+                ", status=" + status +
+                '}';
     }
 }
