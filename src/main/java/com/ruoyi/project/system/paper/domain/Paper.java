@@ -45,7 +45,7 @@ public class Paper extends BaseEntity {
     @Column(name = "author")
     private String author;
     /**
-     * 是否审核
+     * 是否已评论
      */
     @Column(name = "is_review")
     private Integer isReview;

@@ -184,7 +184,22 @@ public class PaperController extends BaseController {
     @GetMapping("/preview/{id}")
     public String preview(@PathVariable("id") Integer id, ModelMap mmap) {
         Paper paper = paperService.selectPaperById(id);
+        //论文预览数+1
+        int previewTimes = paper.getPreviewTimes();
+        paper.setPreviewTimes(previewTimes+1);
+        paperService.updatePaper(paper);
+
         mmap.put("paper", paper);
         return prefix + "/preview";
+    }
+    /**
+     * 下载论文数+1
+     */
+    @PostMapping("/download")
+    @ResponseBody
+    public AjaxResult download(Integer paperId) {
+        Paper paper = paperService.selectPaperById(paperId);
+        paper.setDownloadTimes(paper.getDownloadTimes()+1);
+        return toAjax(paperService.updatePaper(paper));
     }
 }

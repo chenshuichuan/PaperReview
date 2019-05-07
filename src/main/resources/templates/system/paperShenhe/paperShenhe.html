@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
-    <th:block th:include="include :: header('论文列表')"/>
+    <th:block th:include="include :: header('论文审核列表')"/>
 </head>
 <body class="gray-bg">
 <div class="container-div">
@@ -55,19 +55,13 @@
                 </div>
             </form>
         </div>
+
         <div class="btn-group-sm" id="toolbar" role="group">
-            <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:paper:add">
-                <i class="fa fa-plus"></i> 添加
+            <a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()"
+               shiro:hasPermission="system:paperShenhe:edit">
+                <i class="fa fa-edit"></i> 审核
             </a>
-            <!--<a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()"-->
-               <!--shiro:hasPermission="system:paper:edit">-->
-                <!--<i class="fa fa-edit"></i> 修改-->
-            <!--</a>-->
-            <a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()"
-               shiro:hasPermission="system:paper:remove">
-                <i class="fa fa-remove"></i> 删除
-            </a>
-            <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:paper:export">
+            <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:paperShenhe:export">
                 <i class="fa fa-download"></i> 导出
             </a>
         </div>
@@ -78,9 +72,9 @@
 </div>
 <div th:include="include :: footer"></div>
 <script th:inline="javascript">
-    var editFlag = [[${@permission.hasPermi('system:paper:edit')}]];
-    var removeFlag = [[${@permission.hasPermi('system:paper:remove')}]];
-    var prefix = ctx + "system/paper";
+    var editFlag = [[${@permission.hasPermi('system:paperShenhe:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('system:paperShenhe:remove')}]];
+    var prefix = ctx + "system/paperShenhe";
 
     var datas = [[${@dict.getType('user_yes_no')}]];
     var paperStatus = [[${@dict.getType('user_paper_status')}]];
@@ -92,7 +86,7 @@
             updateUrl: prefix + "/edit/{id}",
             removeUrl: prefix + "/remove",
             exportUrl: prefix + "/export",
-            modalName: "论文",
+            modalName: "论文审核",
             showExport: true,
             columns: [{
                 checkbox: true
@@ -192,11 +186,7 @@
                     align: 'center',
                     formatter: function (value, row, index) {
                         var actions = [];
-                        //审核通过了的论文不能再修改了
-                        if(row.isPass!=1||row.isPass!='1'){
-                            actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
-                        }
-                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
                         return actions.join('');
                     }
                 }]
@@ -209,11 +199,10 @@
             window.open(paperUrl,"_blank");
         }
         function previewPDF(title, id) {
-            $.modal.open("预览：" +title, prefix+"/preview/"+id,900,500);
+            $.modal.open("预览：" +title, "/system/paper/preview/"+id,900,500);
             $.table.search();
         }
     });
-
 </script>
 </body>
 </html>

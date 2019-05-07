@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.ruoyi.common.utils.file.FileUploadUtils;
 import com.ruoyi.common.utils.security.ShiroUtils;
+import com.ruoyi.project.system.paperComment.mapper.PaperCommentMapper;
 import com.ruoyi.project.system.user.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class PaperServiceImpl implements IPaperService {
     @Autowired
     private PaperMapper paperMapper;
-
+    @Autowired
+    private PaperCommentMapper paperCommentMapper;
     /**
      * 查询论文信息
      *
@@ -88,8 +90,10 @@ public class PaperServiceImpl implements IPaperService {
      * @return 结果
      */
     @Override
+    @Transactional
     public int deletePaperByIds(String ids) {
-        return paperMapper.deletePaperByIds(Convert.toStrArray(ids));
+        paperMapper.deletePaperByIds(Convert.toStrArray(ids));
+        return paperCommentMapper.deletePaperCommentByPaperIds(Convert.toStrArray(ids));
     }
 
 

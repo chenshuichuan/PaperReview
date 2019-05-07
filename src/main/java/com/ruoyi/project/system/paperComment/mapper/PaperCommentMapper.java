@@ -59,4 +59,12 @@ public interface PaperCommentMapper {
      */
     public int deletePaperCommentByIds(String[] ids);
 
+    /**
+     * 批量删除论文评论
+     *
+     * @param ids 需要删除的论文的ID
+     * @return 结果
+     */
+    public int deletePaperCommentByPaperIds(String[] ids);
+
 }

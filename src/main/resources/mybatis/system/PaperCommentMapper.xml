@@ -76,10 +76,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 	
     <delete id="deletePaperCommentByIds" parameterType="String">
-        delete from pr_paper_comment where id in 
+        delete from pr_paper_comment where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
     </delete>
-    
+    <delete id="deletePaperCommentByPaperIds" parameterType="String">
+        delete from pr_paper_comment where paper_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
 </mapper>
