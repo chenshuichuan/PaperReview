@@ -7,6 +7,8 @@ import com.ruoyi.common.utils.IpUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.file.FileUploadUtils;
 import com.ruoyi.common.utils.security.ShiroUtils;
+import com.ruoyi.project.system.paperComment.domain.PaperComment;
+import com.ruoyi.project.system.paperComment.service.PaperCommentRepository;
 import com.ruoyi.project.system.paperType.domain.PaperType;
 import com.ruoyi.project.system.paperType.service.IPaperTypeService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -46,7 +48,8 @@ public class PaperController extends BaseController {
     private IPaperService paperService;
     @Autowired
     private IPaperTypeService paperTypeService;
-
+    @Autowired
+    private PaperCommentRepository paperCommentRepository;
     @RequiresPermissions("system:paper:view")
     @GetMapping()
     public String paper(ModelMap mmap) {
@@ -201,5 +204,16 @@ public class PaperController extends BaseController {
         Paper paper = paperService.selectPaperById(paperId);
         paper.setDownloadTimes(paper.getDownloadTimes()+1);
         return toAjax(paperService.updatePaper(paper));
+    }
+    /**
+     * 查看论文评论
+     */
+    @GetMapping("/viewComments/{id}")
+    public String viewComments(@PathVariable("id") Integer id, ModelMap mmap) {
+        List<PaperComment> paperCommentList = paperCommentRepository.findByPaperId(id);
+
+        mmap.put("paperCommentList",paperCommentList);
+        mmap.put("commentsNumber",paperCommentList.size());
+        return prefix + "/comments";
     }
 }

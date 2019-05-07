@@ -1,8 +1,10 @@
 package com.ruoyi.project.system.paperShenhe.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.ruoyi.project.system.paper.service.IPaperService;
+import com.ruoyi.project.system.user.domain.User;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -52,7 +54,17 @@ public class PaperShenheController extends BaseController {
     public TableDataInfo list(Paper paperShenhe) {
         startPage();
         List<Paper> list = paperService.selectPaperList(paperShenhe);
-        return getDataTable(list);
+        //去除草稿论文
+        List<Paper> paperList = new ArrayList<>();
+        for (Paper paper:list){
+            //去除草稿论文，草稿的肯定是不通过的
+            if(paper.getStatus()==2){
+
+            }else{
+                paperList.add(paper);
+            }
+        }
+        return getDataTable(paperList);
     }
 
 
@@ -110,7 +122,8 @@ public class PaperShenheController extends BaseController {
         //仅更新审核
         if(null !=paper){
             paper.setIsPass(paperShenhe.getIsPass());
-            flag = paperService.updatePaper(paperShenhe);
+            paper.setStatus(paperShenhe.getIsPass());
+            flag = paperService.updatePaper(paper);
         }else{
             flag=0;
         }

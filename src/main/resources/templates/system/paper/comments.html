@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('查看论文评论')"/>
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-paper-edit">
+        <!--<input id="id" name="id" th:field="*{id}" type="hidden">-->
+        <div class="form-group">
+            <label class="col-sm-3 control-label">当前论文评论数：</label>
+            <div class="col-sm-8" style="text-align: center;">
+                <label class="col-sm-3 control-label" th:text="${commentsNumber}"></label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">评审专家：</label>
+            <div class="col-sm-8" style="text-align: center;">
+                <span class="form-control">评论内容：</span>
+            </div>
+        </div>
+
+        <div class="form-group" th:each="paperComment,commentStat:${paperCommentList}">
+            <label class="col-sm-3 control-label" th:text="${paperComment.isPublic == 0 ? '***专家：' : paperComment.userName+'专家：'}">评论专家：</label>
+            <div class="col-sm-8">
+                <textarea id="content" name="content" th:text="${paperComment.content}"
+                          class="form-control" rows="8" maxlength="900" readonly></textarea>
+            </div>
+        </div>
+    </form>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript">
+
+    function submitHandler() {
+//        if ($.validate.form()) {
+//            $.operate.save(prefix + "/edit", $('#form-paper-edit').serialize());
+//        }
+    }
+</script>
+</body>
+</html>

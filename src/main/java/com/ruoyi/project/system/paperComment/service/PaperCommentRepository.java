@@ -6,6 +6,8 @@ import com.ruoyi.project.system.paperComment.domain.PaperComment;
 import io.swagger.models.auth.In;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 /**
  * @author  ricardo
  * Description: paper；类的jpa
@@ -35,4 +37,10 @@ public interface PaperCommentRepository extends JpaRepository<PaperComment,Integ
      * @return
      */
     int deleteByPaperIdAndUserId(Integer paperId, Integer userId);
+    /**
+     * 查找某篇论文的所有评价
+     * @param paperId
+     * @return
+     */
+    List<PaperComment> findByPaperId(Integer paperId);
 }

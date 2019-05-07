@@ -33,7 +33,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="id != null "> and id = #{id}</if>
              <if test="title != null  and title != '' "> and title like concat('%', #{title}, '%')</if>
              <if test="user != null  and user != '' "> and user = #{user}</if>
-             <if test="paperType != null "> and paper_type = #{paperType}</if>
+             <if test="paperType != null "> and paper_type like concat('%', #{paperType}, '%')</if>
              <if test="author != null  and author != '' "> and author like concat('%', #{author}, '%')</if>
              <if test="isReview != null "> and is_review = #{isReview}</if>
              <if test="isPass != null "> and is_pass = #{isPass}</if>

@@ -50,6 +50,8 @@ public class PaperReviewController extends BaseController {
     private PaperCommentRepository paperCommentRepository;
     @Autowired
     private IPaperCommentService paperCommentService;
+    @Autowired
+    private IPaperReviewService paperReviewService;
 
     @RequiresPermissions("system:paperReview:view")
     @GetMapping()
@@ -187,7 +189,7 @@ public class PaperReviewController extends BaseController {
     @PostMapping("/remove")
     @ResponseBody
     public AjaxResult remove(String ids) {
-        return toAjax(paperService.deletePaperByIds(ids));
+        return toAjax(paperReviewService.deletePaperCommentByPaperIdsAndUser(ids));
     }
 
 }
